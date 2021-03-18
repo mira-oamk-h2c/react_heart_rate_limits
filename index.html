@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Heart rate limits</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body {
+      padding: 2em;
+    }
+
+    h2 {
+      margin-bottom: 1em;
+    }
+
+    div {
+      margin-bottom: 2em;
+    }
+
+    label {
+      display: inline-block;
+      width: 150px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    class Heartrate extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          age: 0,
+          upper: 0,
+          lower: 0
+        }
+      }
+
+      readValue = (event) => {
+        this.setState({ [event.target.name]: event.target.value })
+      }
+
+      calculate = (event) => {
+        event.preventDefault();
+        const { age, upper, lower } = this.state;
+        const resultLower = (220 - age) * 0.65;
+        const resultUpper = (220 - age) * 0.85;
+        this.setState({ lower: resultLower });
+        this.setState({ upper: resultUpper });
+      }
+
+      render() {
+        const { age, upper, lower } = this.state;
+        return (
+          <div>
+            <h2>Calculate exercise heart rate limits based on age</h2>
+            <form onSubmit={this.calculate}>
+              <div>
+                <label>Age</label>
+                <input name="age" type="number" value={age} onChange={this.readValue} />
+              </div>
+              <div>
+                <output>{lower.toFixed(1)} – {upper.toFixed(1)}</output>
+              </div>
+              <button>Calculate</button>
+            </form>
+          </div>
+        )
+      }
+
+    }
+
+    ReactDOM.render(<Heartrate />, document.getElementById('root'));
+
+  </script>
+
+</body>
+
+</html>
